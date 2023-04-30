@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>jp.co.axa</groupId>
+    <artifactId>api-demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <description>
+    Core module for the project. Can't possibly contain any implementations
+    and any dependencies to any other project's modules.
+    Though all other modules have dependency on it.
+  </description>
+
+  <artifactId>core</artifactId>
+
+</project>

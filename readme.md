@@ -12,12 +12,14 @@ I remained it as a maven structure. The main things I did:
 3. Do some dependencies cleanup
 4. I saw some attempts to do logging. I changed it to normal java's logging, but I suppose some kind of audit is expected here. 
 It can be something on a database level with stored procedure (storing all the changes as a JSON in a dedicated table - a standard solution). 
-Or it also can be something on a service level with logging the user's details. Didn't do it since the next point.
+Or it also can be something on a service level with logging the user's details. Maybe even by sending events to kafka or whatever. 
+That is why I didn't implement "soft delete" though I wanted. I didn't decide yet, how/where old data should be stored.
 5. Authentication\Authorization can be added. Most probably we wish to secure endpoints and also introduce a role model.
-I. e., only authenticated users (i. e., managers?) can make changes (or even view?), 
-Managers are connected with their department
-Managers can be only created by Admin, but Admin can't create/edit employees
-This role model is just an example. Anyway, I don't wand to implement it inside this microservice - it should be done by a separate one, this microservice should only receive security token and request it's integrity and provided permissions.
+I.e., 
+- only authenticated users (i. e., managers?) can make changes (or even view?), 
+- Managers are connected with their department
+- Managers can be only created by Admin, but Admin can't create/edit employees
+This role model is just an example. Anyway, I don't wand to implement it inside this microservice - it should be done by a separate one, this microservice should only receive security token and request its integrity and provided permissions.
 Implementing separate security microservice should involve also configuration service (zookeeper/vault/whatever). 
 And first I'd prefer to implement mock microservice (or just service class) to remain possible to test it all.
 6. Currently, database credentials are stored in a property file. This is not good, since it means that we'll make different builds for different environments. They should be moved to configuration server (zookeeper/vault/whatever) and it's address should be execution parameter of the application. 
@@ -49,7 +51,7 @@ Currently, I manually remove ID from newly created Employee, though I could rest
 I could use spring validation, but I didn't. Just a personal dislike. One of the arguments - it forces you to use exception flow. 
 Currently, I used component's auto-scan, though for a big legacy project it can be dangerous, and it can be better to use manual configurations. 
 
-I also tried to avoid obvious comments. Personally I think they can be confusing. Also, as uncle Bob said, comments can get stale, while your code can't. So I hope I created good enough documentation by my tests. 
+I also tried to avoid obvious comments, since personally I think they can be confusing. BTW, as uncle Bob said, comments can get stale, while your code can't. So I hope I created good enough documentation by my tests. 
 
 
 ### My experience in Java 

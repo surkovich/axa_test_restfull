@@ -1,52 +1,58 @@
-### How to use this spring-boot project
+### Instructions to this project
+I remained it as a maven structure. The main things I did:
+1. Changed the structure of application (details below)
+2. Migrated from H2 to mariadb (details below)
+3. Fixed some bugs, covered with tests
+4. Added civilized migrations control system
 
-- Install packages with `mvn package`
-- Run `mvn spring-boot:run` for starting the application (or use your IDE)
-
-Application (with the embedded H2 database) is ready to be used ! You can access the url below for testing it :
-
-- Swagger UI : http://localhost:8080/swagger-ui.html
-- H2 UI : http://localhost:8080/h2-console
-
-> Don't forget to set the `JDBC URL` value as `jdbc:h2:mem:testdb` for H2 UI.
-
-
-
-### Instructions
-
-- download the zip file of this project
-- create a repository in your own github named 'java-challenge'
-- clone your repository in a folder on your machine
-- extract the zip file in this folder
-- commit and push
-
-- Enhance the code in any ways you can see, you are free! Some possibilities:
-  - Add tests
-  - Change syntax
-  - Protect controller end points
-  - Add caching logic for database calls
-  - Improve doc and comments
-  - Fix any bug you might find
-- Edit readme.md and add any comments. It can be about what you did, what you would have done if you had more time, etc.
-- Send us the link of your repository.
-
-#### Restrictions
-- use java 8
+### What is yet to be done
+(in order I would plan to do it)
+1. Cover with integration tests. Probably usage of H2 should be fine in this case, since we don't use platform-specific features, like JSON fields and\or complicated stored procedures.
+2. Cover with end-to-ent tests (something like Karate should work fine)
+3. Do some dependencies cleanup
+4. I saw some attempts to do logging. I changed it to normal java's logging, but I suppose some kind of audit is expected here. 
+It can be something on a database level with stored procedure (storing all the changes as a JSON in a dedicated table - a standard solution). 
+Or it also can be something on a service level with logging the user's details. Didn't do it since the next point.
+5. Authentication\Authorization can be added. Most probably we wish to secure endpoints and also introduce a role model.
+I. e., only authenticated users (i. e., managers?) can make changes (or even view?), 
+Managers are connected with their department
+Managers can be only created by Admin, but Admin can't create/edit employees
+This role model is just an example. Anyway, I don't wand to implement it inside this microservice - it should be done by a separate one, this microservice should only receive security token and request it's integrity and provided permissions.
+Implementing separate security microservice should involve also configuration service (zookeeper/vault/whatever). 
+And first I'd prefer to implement mock microservice (or just service class) to remain possible to test it all.
+6. Currently, database credentials are stored in a property file. This is not good, since it means that we'll make different builds for different environments. They should be moved to configuration server (zookeeper/vault/whatever) and it's address should be execution parameter of the application. 
+7. More documentation on swagger. It would be nice to other teams and our API's users.
+8. Last but not least - currently used approach for "update" flow is a bit controversial - 
+First, it is done in a repository level, but looks like a part of business logic - maybe it can be moved here
+Second, I used the Exception flow here. It is fast and simple, but exceptions spoil the code's structure and can affect application's performance.
+(Yes, I have read the Uncle Bob's "clean code", and that is why I call this point "controversial").
 
 
-#### What we will look for
-- Readability of your code
-- Documentation
-- Comments in your code 
-- Appropriate usage of spring boot
-- Appropriate usage of packages
-- Is the application running as expected
-- No performance issues
+### Environment
+Before running the application, use local_setup/start_environment.sh script. It downloads and creates docker with database. 
+Further it should be extended for other apps, like aforementioned configuration server, other database(s), mock for security microservice etc.
+local_setup/stop_environment.sh - stops the current environment
+local_setup/stop_clear_environment.sh - stops database and cleans its contents. Use it in case of breaking local data/jumping between incompatible branches etc.
 
-#### Your experience in Java
 
-**Please let us know more about your Java experience in a few sentences. For example:**
+### Application structure
+I have split application to separate modules. The general idea is to implement Dependency Inversion principle - now no code has any dependencies on any other layer's implementation.
 
-- I have 3 years experience in Java and I started to use Spring Boot from last year
-- I'm a beginner and just recently learned Spring Boot
-- I know Spring Boot very well and have been using it for many years
+controller-api's contents is not used by modules other than controller-impl, but it is separated since it can (should) be built as a separate jar and shared with other team(s) as a public API of our module
+
+service-api and repository-api could be merged into core, but I separated them in order to follow interface segregation principle.
+
+
+### Some remarks
+Java 8 is obsolete at this moment, it is sad I couldn't use junit5 at least, not mentioning record classes.
+Currently, I manually remove ID from newly created Employee, though I could restrict it on a language level, by creating some kind of "NewEmployeeDTO" without ID itself. Didn't do that thinking about record classes, which can be very useful for such cases. 
+I could use spring validation, but I didn't. Just a personal dislike. One of the arguments - it forces you to use exception flow. 
+Currently, I used component's auto-scan, though for a big legacy project it can be dangerous, and it can be better to use manual configurations. 
+
+I also tried to avoid obvious comments. Personally I think they can be confusing. Also, as uncle Bob said, comments can get stale, while your code can't. So I hope I created good enough documentation by my tests. 
+
+
+### My experience in Java 
+- I am java back-end developer since 2008. I use spring boot since 2018, though I used spring before. 
+- Before spring boot I used JavaEE and JBoss/EAP.
+

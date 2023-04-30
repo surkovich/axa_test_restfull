@@ -49,7 +49,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
   }
 
   /**
-   * Throws javax.persistence.EntityNotFoundException when entity with this ID doesn't exist
+   * Throws EmployeeNotExistsException when entity with this ID doesn't exist
    */
   @NonNull
   @Override

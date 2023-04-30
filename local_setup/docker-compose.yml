@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  db:
+    restart: always
+    image: mariadb:10.5.12
+    hostname: mariadb
+    container_name: mariadb_axa
+    volumes:
+      - ./data/mariadb:/var/lib/mysql:delegated
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: axa
+      MARIADB_DATABASE: axa
+      MARIADB_USER: axa
+      MARIADB_PASSWORD: axa

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd"
+>
+
+  <changeSet id="Initial employee table creation" author="Babak Aleksandr">
+    <createTable tableName="EMPLOYEE">
+      <column name="ID" type="bigint"><constraints primaryKey="true" nullable="false"/></column>
+      <column name="employee_name" type="varchar(255)"/>
+      <column name="employee_salary" type="int" />
+      <column name="department" type="varchar(512)" />
+    </createTable>
+
+    <createSequence sequenceName="EMPLOYEE_PK_SEQ" />
+  </changeSet>
+
+
+
+</databaseChangeLog>
